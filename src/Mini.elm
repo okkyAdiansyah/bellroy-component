@@ -1,4 +1,5 @@
-module Elm.MiniCart exposing (main)
+module Mini exposing (..)
+
 
 import Browser
 import Html exposing (Html, div, button, text, select, img, option)
