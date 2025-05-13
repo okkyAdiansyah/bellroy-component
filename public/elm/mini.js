@@ -5161,7 +5161,7 @@ var $elm$core$Task$perform = F2(
 var $elm$browser$Browser$element = _Browser_element;
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$Elm$MiniCart$init = function (_v0) {
+var $author$project$Mini$init = function (_v0) {
 	return _Utils_Tuple2(
 		{
 			isOpen: true,
@@ -5200,7 +5200,7 @@ var $elm$core$List$filter = F2(
 	});
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $elm$core$Basics$not = _Basics_not;
-var $author$project$Elm$MiniCart$updateQty = F3(
+var $author$project$Mini$updateQty = F3(
 	function (targetId, newQty, item) {
 		return _Utils_eq(item.id, targetId) ? _Utils_update(
 			item,
@@ -5208,7 +5208,7 @@ var $author$project$Elm$MiniCart$updateQty = F3(
 				qty: A2($elm$core$Basics$max, 1, newQty)
 			}) : item;
 	});
-var $author$project$Elm$MiniCart$update = F2(
+var $author$project$Mini$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'ToggleCart':
@@ -5239,7 +5239,7 @@ var $author$project$Elm$MiniCart$update = F2(
 					var qty = _v1.a;
 					var updatedItems = A2(
 						$elm$core$List$map,
-						A2($author$project$Elm$MiniCart$updateQty, id, qty),
+						A2($author$project$Mini$updateQty, id, qty),
 						model.items);
 					return _Utils_Tuple2(
 						_Utils_update(
@@ -5251,7 +5251,7 @@ var $author$project$Elm$MiniCart$update = F2(
 				}
 		}
 	});
-var $author$project$Elm$MiniCart$ToggleCart = {$: 'ToggleCart'};
+var $author$project$Mini$ToggleCart = {$: 'ToggleCart'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
@@ -5282,10 +5282,10 @@ var $elm$html$Html$Events$onClick = function (msg) {
 };
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$Elm$MiniCart$RemoveItem = function (a) {
+var $author$project$Mini$RemoveItem = function (a) {
 	return {$: 'RemoveItem', a: a};
 };
-var $author$project$Elm$MiniCart$SetQty = F2(
+var $author$project$Mini$SetQty = F2(
 	function (a, b) {
 		return {$: 'SetQty', a: a, b: b};
 	});
@@ -5332,7 +5332,7 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 };
 var $elm$html$Html$option = _VirtualDom_node('option');
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
-var $author$project$Elm$MiniCart$qtyOption = function (n) {
+var $author$project$Mini$qtyOption = function (n) {
 	return A2(
 		$elm$html$Html$option,
 		_List_fromArray(
@@ -5361,7 +5361,7 @@ var $elm$html$Html$Attributes$width = function (n) {
 		'width',
 		$elm$core$String$fromInt(n));
 };
-var $author$project$Elm$MiniCart$viewItem = function (item) {
+var $author$project$Mini$viewItem = function (item) {
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
@@ -5401,19 +5401,19 @@ var $author$project$Elm$MiniCart$viewItem = function (item) {
 					[
 						$elm$html$Html$Events$onInput(
 						function (val) {
-							return A2($author$project$Elm$MiniCart$SetQty, item.id, val);
+							return A2($author$project$Mini$SetQty, item.id, val);
 						})
 					]),
 				A2(
 					$elm$core$List$map,
-					$author$project$Elm$MiniCart$qtyOption,
+					$author$project$Mini$qtyOption,
 					A2($elm$core$List$range, 1, 10))),
 				A2(
 				$elm$html$Html$button,
 				_List_fromArray(
 					[
 						$elm$html$Html$Events$onClick(
-						$author$project$Elm$MiniCart$RemoveItem(item.id))
+						$author$project$Mini$RemoveItem(item.id))
 					]),
 				_List_fromArray(
 					[
@@ -5421,7 +5421,7 @@ var $author$project$Elm$MiniCart$viewItem = function (item) {
 					]))
 			]));
 };
-var $author$project$Elm$MiniCart$viewTotal = function (items) {
+var $author$project$Mini$viewTotal = function (items) {
 	var total = A3(
 		$elm$core$List$foldl,
 		F2(
@@ -5443,7 +5443,7 @@ var $author$project$Elm$MiniCart$viewTotal = function (items) {
 				'Total: $' + $elm$core$String$fromFloat(total))
 			]));
 };
-var $author$project$Elm$MiniCart$view = function (model) {
+var $author$project$Mini$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -5453,7 +5453,7 @@ var $author$project$Elm$MiniCart$view = function (model) {
 				$elm$html$Html$button,
 				_List_fromArray(
 					[
-						$elm$html$Html$Events$onClick($author$project$Elm$MiniCart$ToggleCart)
+						$elm$html$Html$Events$onClick($author$project$Mini$ToggleCart)
 					]),
 				_List_fromArray(
 					[
@@ -5467,21 +5467,21 @@ var $author$project$Elm$MiniCart$view = function (model) {
 						$elm$html$Html$Attributes$class('mini-cart')
 					]),
 				_Utils_ap(
-					A2($elm$core$List$map, $author$project$Elm$MiniCart$viewItem, model.items),
+					A2($elm$core$List$map, $author$project$Mini$viewItem, model.items),
 					_List_fromArray(
 						[
-							$author$project$Elm$MiniCart$viewTotal(model.items)
+							$author$project$Mini$viewTotal(model.items)
 						]))) : $elm$html$Html$text('')
 			]));
 };
-var $author$project$Elm$MiniCart$main = $elm$browser$Browser$element(
+var $author$project$Mini$main = $elm$browser$Browser$element(
 	{
-		init: $author$project$Elm$MiniCart$init,
+		init: $author$project$Mini$init,
 		subscriptions: function (_v0) {
 			return $elm$core$Platform$Sub$none;
 		},
-		update: $author$project$Elm$MiniCart$update,
-		view: $author$project$Elm$MiniCart$view
+		update: $author$project$Mini$update,
+		view: $author$project$Mini$view
 	});
-_Platform_export({'Elm':{'MiniCart':{'init':$author$project$Elm$MiniCart$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}}});}(this));
+_Platform_export({'Mini':{'init':$author$project$Mini$main(
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));

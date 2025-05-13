@@ -1,8 +1,6 @@
 ---
 import '../styles/global.css';
-import Product from '../components/Product/Product.astro';
-import Nav from '../components/Nav/Nav.astro';
-import Cart from '../components/Cart/Cart.astro';
+import Showcase from '../Components/Showcase/Showcase.astro';
 ---
 
 <html lang="en">
@@ -12,12 +10,11 @@ import Cart from '../components/Cart/Cart.astro';
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Astro</title>
+		<script src="/elm/showcase.js" defer></script>
+		<script type="module" src="/showcase-component.js" defer></script>
 	</head>
 	<body>
-		<Product>
-			<Nav>
-				<Cart />
-			</Nav>
-		</Product>
+		<elm-showcase></elm-showcase>
+		<!-- <Showcase /> -->
 	</body>
 </html>
