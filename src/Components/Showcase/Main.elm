@@ -1,6 +1,6 @@
 module Components.Showcase.Main exposing (main)
 
-import Product
+import FeaturedProduct
 import Http
 import Json.Decode as JD
 import Browser
@@ -8,48 +8,50 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 
 -- MODEL
-type alias Model = 
-    { products : List Product.Model
-    , errorMsg : Maybe String
+type alias Model =
+    { data : List FeaturedProduct.Model
+    , errorMsg : String
     }
 
-emptyProductModel : Product.Model
-emptyProductModel=
-    { activeProduct = { thumb = "", code = ""}
-    , product = emptyProduct
+-- FEEDER
+emptyProductModel : FeaturedProduct.Model
+emptyProductModel =
+    { active_product = { product_img = ""
+    , product_color_code = ""
+    , product_color_name = ""
     }
+    , product_data = emptyProduct}
 
-emptyProduct : Product.Product
+emptyProduct : FeaturedProduct.Product
 emptyProduct =
-    { productSKU = ""
-    , geoID = ""
-    , isAvailable = False
-    , productName = ""
-    , productSizeOptions = []
-    , productGallery = []
-    , productPrice = ""
-    , productOptions = []
+    { product_sku = ""
+    , is_new = False
+    , product_name = ""
+    , product_slug = ""
+    , product_price = ""
+    , product_feat = ""
+    , product_options = []
     }
-
--- MESSAGES
-fetchProduct : Cmd Msg
-fetchProduct =
-    Http.get
-        { url = "http://localhost:4321/api/products.json"
-        , expect = Http.expectJson GotProducts productListDecoder
-        }
-
-type Msg
-    = GotProducts ( Result Http.Error (List Product.Product) )
-    | ProductMsg Int Product.Msg
 
 -- DECODER
-productListDecoder : JD.Decoder (List Product.Product)
-productListDecoder =
-    JD.list Product.productDecoder
+jsonDataDecoder : JD.Decoder (List FeaturedProduct.Product)
+jsonDataDecoder =
+    JD.field "data" (JD.list FeaturedProduct.productDecoder)
+
+-- MESSAGES
+type Msg
+    = GotProducts (Result Http.Error (List FeaturedProduct.Product))
+    | UpdateProductData Int FeaturedProduct.Msg
+
+-- FETCH
+fetchProducts : Cmd Msg
+fetchProducts =
+    Http.get
+        { url = "http://localhost:4321/api/product/featured-product.json"
+        , expect = Http.expectJson GotProducts jsonDataDecoder}
 
 -- UPDATE
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model ->  ( Model, Cmd Msg )
 update msg model =
     case msg of
         GotProducts (Ok rawProducts) ->
@@ -58,58 +60,60 @@ update msg model =
                     List.map
                         (\product ->
                             let
-                                (productModel, _) = Product.update (Product.UpdateModel product) emptyProductModel
+                                (productModel, _) = FeaturedProduct.update (FeaturedProduct.UpdateInitialModel product) emptyProductModel
                             in
-                            productModel
+                                productModel
                         )
                         rawProducts
             in
-            ( {model | products = productModels}, Cmd.none )
-            
-        
+             ( {model | data = productModels}, Cmd.none )
         GotProducts (Err err) ->
             let
                 message =
-                    case err of
-                        Http.BadUrl _ -> "Invalid URL"
-                        Http.Timeout -> "Request timed out"
-                        Http.NetworkError -> "Network error"
-                        Http.BadStatus status -> "Bad response: " ++ String.fromInt status
-                        Http.BadBody _ -> "Invalid response format"
+                   case err of
+                       Http.BadUrl _ -> "Invalid URL"
+                       Http.Timeout -> "Request timed out"
+                       Http.NetworkError -> "Network error"
+                       Http.BadStatus status -> "Bad response: " ++ String.fromInt status
+                       Http.BadBody _ -> "Invalid response format"
 
                 _= Debug.log "HTTP ERROR" err
-
             in
-            ( {model | errorMsg = Just message}, Cmd.none )
-        
-        ProductMsg index subMsg ->
+             ( {model | errorMsg = message}, Cmd.none )
+        UpdateProductData index subMsg ->
             let
                 updatedAtIndex i list =
                     List.indexedMap
-                        (\j productModel ->
-                             if i == j then
-                                Tuple.first (Product.update subMsg productModel)
-                             else
-                                productModel
+                        (\j products ->
+                            if i == j then
+                                Tuple.first (FeaturedProduct.update subMsg products)
+                            else
+                                products
                         )
                         list
             in
-            ( {model | products = updatedAtIndex index model.products}, Cmd.none )
+             ( {model | data = updatedAtIndex index model.data}, Cmd.none )
+
 -- VIEW
 view : Model -> Html Msg
 view model =
-    div[class "test"]
-        (List.indexedMap
-            (\i productModel -> 
-                Html.map (ProductMsg i) (Product.view productModel)
+    div[ class "w-screen h-auto px-32 py-16 flex flex-column items-center gap-x-2"]
+        ( List.indexedMap
+            (\i products ->
+                Html.map (UpdateProductData i) (FeaturedProduct.view products)
             )
-            model.products
+            model.data
         )
 
 -- INIT
 init : () -> (Model, Cmd Msg)
 init _ =
-    ({products = [], errorMsg = Nothing}, fetchProduct)
+    (
+        { data = []
+        , errorMsg = ""
+        },
+        fetchProducts
+    )
 
 -- MAIN
 main : Program () Model Msg

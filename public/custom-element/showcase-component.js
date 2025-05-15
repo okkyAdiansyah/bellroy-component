@@ -1,12 +1,12 @@
 class ShowcaseComponent extends HTMLElement {
     constructor(){
         super();
-        this.attachShadow({mode : 'open'})
+        // this.attachShadow({mode : 'open'})
     }
 
     connectedCallback(){
         const container = document.createElement('div');
-        this.shadowRoot.appendChild(container);
+        this.appendChild(container);
 
         Elm.Components.Showcase.Main.init({
             node: container
