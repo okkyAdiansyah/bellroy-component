@@ -1,26 +1,5 @@
 import type { APIRoute } from "astro";
 
-// interface option {
-//     optionColor : String,
-//     optionImg : String,
-//     optionCode : String,
-// }
-
-// interface SizeOption {
-//     sizeCode : String,
-//     sizeLabel : String
-// }
-
-// interface Product {
-//     productSKU : String,
-//     geoID : String,
-//     isAvailable : Boolean,
-//     productName : String,
-//     productSizeOptions : SizeOption [],
-//     productGallery : String [],
-//     productPrice : String,
-//     productOptions : option [],
-// }
 interface ProductOption {
     product_img : String,
     product_color_code : String
@@ -142,6 +121,6 @@ export const GET : APIRoute = async () => {
     ]
     
     return new Response(
-        JSON.stringify(products), { status: 200 }
+        JSON.stringify({data : products}), { status: 200 }
     )
 }
