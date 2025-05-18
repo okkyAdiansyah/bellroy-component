@@ -15,4 +15,4 @@ generateSizes sizes =
 
 generateSrcSet : String -> List String -> String
 generateSrcSet src sizes =
-    String.join ", " (List.map(\size -> src ++ "w=" ++ size ++ " " ++ size ++ "vw") sizes)
+    String.join ", " (List.map(\size -> src ++ "w=" ++ size ++ "&h=" ++ size ++ " " ++ size ++ "vw") sizes)
