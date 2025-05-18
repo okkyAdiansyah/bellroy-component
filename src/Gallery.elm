@@ -3,21 +3,26 @@ module Gallery exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import SrcsetGen as Generate
 
 -- MODEL
-type alias Content =
-    { id : Int
-    , url : String
+type alias Content = 
+    { id: Int
+    , url: String
     }
-
+    
 type alias Model =
     { active : Int
     , contents : List Content
     }
 
+-- HELPER
+srcSet : List String
+srcSet = ["750", "1000", "1200", "1500"]
+
 -- MESSAGES
 type Msg
-    = UpdateGallery (List Content)
+    = InitGallery (List String)
     | ChangeActiveGallery Int
     | NextImage
     | PrevImage
@@ -26,12 +31,11 @@ type Msg
 update : Msg -> Model ->  ( Model, Cmd Msg )
 update msg model =
     case msg of
-        UpdateGallery contents ->
+        InitGallery contents ->
             let
-                initialGallery : (List Content)
                 initialGallery =
-                    List.indexedMap(\id item ->
-                        { id = id, url = item.url}
+                    List.indexedMap(\id url ->
+                        { id = id, url = url}
                     )
                     contents
             in
@@ -42,7 +46,7 @@ update msg model =
             let
                 updatedId = 
                     if model.active + 1 >= List.length model.contents then
-                        List.length model.contents
+                        List.length model.contents - 1
                     else
                         model.active + 1
             in
@@ -60,32 +64,60 @@ update msg model =
 -- VIEW
 view : Model -> Html Msg
 view model =
-    div[]
-        [ viewSlides model.contents
-        , viewControl model.contents
+    div[ class "w-full h-auto aspect-square gap-y-2 flex flex-col lg:w-[55%]"]
+        [ viewSlides model.contents model
+        , viewControl model.contents model
         ]
 
-viewSlides : List Content -> Html Msg
-viewSlides contents =
-    div[]
-        [ button[ onClick NextImage ][]
-        , div[]
-            [ div[]
-                (List.map(\item ->
-                    img[src item.url][]
-                )
-                contents
-                )
+viewSlides : List Content -> Model -> Html Msg
+viewSlides contents model =
+    div[ class "w-full h-auto flex items-center gap-x-4 relative lg:h-full" ]
+        [ button
+            [ onClick PrevImage
+            , class "transparent text-[48px] flex items-center justify-center text-gray-500 absolute left-0 p-1 cursor-pointer z-[799] lg:hidden"]
+            [text "<"]
+        , div[ class "w-full h-auto flex items-center overflow-x-scroll lg:overflow-x-hidden" ]
+            [ div
+                [ class "w-full h-auto flex items-center transition-transform duration-500 ease-in-out"
+                , style "transform" ("translateX(-" ++ String.fromInt (model.active * 100) ++ "%)")]
+                    (List.map(\item ->
+                        div[ class "w-full h-auto aspect-[3/2] shrink-0 lg:aspect-square" ]
+                         [ img
+                            [ src (item.url ++ "w=750&h=750")
+                            , class "w-full h-full object-contain"
+                            , alt ""
+                            , height 750
+                            , width 750
+                            , attribute "sizes" "750vw"
+                            , attribute "srcset" (Generate.generateSrcSet item.url srcSet)][]
+                         ]
+                    )
+                    contents
+                    )
             ]
-        , button[ onClick PrevImage ][]
+        , button
+            [ onClick NextImage
+            , class "transparent text-[48px] flex items-center justify-center text-gray-500 absolute right-0 p-1 cursor-pointer z-[799] lg:hidden"]
+            [ text ">"]
         ]
 
-viewControl : List Content -> Html Msg
-viewControl contents =
-    div[]
+viewControl : List Content -> Model -> Html Msg
+viewControl contents model=
+    div[ class "w-full h-auto grid grid-cols-9 grid-rows-2 gap-2" ]
         (List.map(\item ->
-            button[ onClick (ChangeActiveGallery item.id) ][
-                img[src item.url][]
+            button
+            [ onClick (ChangeActiveGallery item.id)
+            , classList
+                    [ ("aspect-square cursor-pointer", True)
+                    , ("border-b-3 border-orange-500 border-solid", item.id == model.active)
+                    ]
+            ][
+                img
+                [ src (item.url ++ "w=160&h=160")
+                , class "w-full h-full object-contain"
+                , attribute "sizes" "160vw"
+                , attribute "srcset" (Generate.generateSrcSet item.url ["160"])]
+                []
             ]
         )
         contents

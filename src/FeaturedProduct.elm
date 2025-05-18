@@ -122,7 +122,7 @@ view model =
                 class ""
             ][text "New"]
         , a[ class "w-full flex flex-col mt-2"
-           , href "/"]
+           , href "/product/"]
             [ p[ class "text-base text-gray-400 capitalize"][text model.product_data.product_name]
             , p[ class "text-sm text-gray-600 uppercase font-bold" ][text ("$" ++ model.product_data.product_price)]
             , span[ class "absolute inset-0 z-10" ][]
@@ -140,7 +140,7 @@ viewOptionControl model options =
 
                 baseAtt =
                     [ onClick (ChangeActiveOption item.product_color_code)
-                    , class "w-4 h-4 rounded-full cursor-pointer"
+                    , class "w-5 h-5 rounded-full cursor-pointer"
                     , style "background-color" item.product_color_code
                     , attribute "role" "radio"
                     , attribute "aria-checked" (if isSelected then "true" else "false")

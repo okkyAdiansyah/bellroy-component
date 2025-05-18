@@ -5334,9 +5334,90 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Components$Showcase$Main$GotProducts = function (a) {
+var $author$project$Components$Single$Main$defaultGallery = {active: 0, contents: _List_Nil};
+var $author$project$Components$Single$Main$defaultProduct = {features: _List_Nil, product_label: '', product_video: '', variables: _List_Nil, warranty_time: ''};
+var $author$project$Components$Single$Main$defaultVariable = {
+	color_variant: _List_Nil,
+	price: '',
+	slug: '',
+	spec: {capacity: '', composition: '', dimension: '', materials: '', weight: ''},
+	subtext: '',
+	var_label: '',
+	var_sku: ''
+};
+var $author$project$Components$Single$Main$default = {errorMsg: '', galleries: $author$project$Components$Single$Main$defaultGallery, product_data: $author$project$Components$Single$Main$defaultProduct, selected_product: $author$project$Components$Single$Main$defaultVariable};
+var $author$project$Components$Single$Main$GotProducts = function (a) {
 	return {$: 'GotProducts', a: a};
 };
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $author$project$Components$Single$Main$Product = F5(
+	function (product_label, product_video, features, variables, warranty_time) {
+		return {features: features, product_label: product_label, product_video: product_video, variables: variables, warranty_time: warranty_time};
+	});
+var $elm$json$Json$Decode$list = _Json_decodeList;
+var $elm$json$Json$Decode$map5 = _Json_map5;
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $author$project$Components$Single$Main$Variable = F7(
+	function (var_label, var_sku, price, slug, subtext, color_variant, spec) {
+		return {color_variant: color_variant, price: price, slug: slug, spec: spec, subtext: subtext, var_label: var_label, var_sku: var_sku};
+	});
+var $author$project$Components$Single$Main$ColorVariant = F4(
+	function (variant_code, variant_label, is_stock, galleries) {
+		return {galleries: galleries, is_stock: is_stock, variant_code: variant_code, variant_label: variant_label};
+	});
+var $elm$json$Json$Decode$bool = _Json_decodeBool;
+var $elm$json$Json$Decode$map4 = _Json_map4;
+var $author$project$Components$Single$Main$colorVariantDecoder = A5(
+	$elm$json$Json$Decode$map4,
+	$author$project$Components$Single$Main$ColorVariant,
+	A2($elm$json$Json$Decode$field, 'variant_code', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'variant_label', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'is_stock', $elm$json$Json$Decode$bool),
+	A2(
+		$elm$json$Json$Decode$field,
+		'galleries',
+		$elm$json$Json$Decode$list($elm$json$Json$Decode$string)));
+var $elm$json$Json$Decode$map7 = _Json_map7;
+var $author$project$Components$Single$Main$Spec = F5(
+	function (capacity, weight, dimension, materials, composition) {
+		return {capacity: capacity, composition: composition, dimension: dimension, materials: materials, weight: weight};
+	});
+var $author$project$Components$Single$Main$specDecoder = A6(
+	$elm$json$Json$Decode$map5,
+	$author$project$Components$Single$Main$Spec,
+	A2($elm$json$Json$Decode$field, 'capacity', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'weight', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'dimension', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'materials', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'composition', $elm$json$Json$Decode$string));
+var $author$project$Components$Single$Main$variableDecoder = A8(
+	$elm$json$Json$Decode$map7,
+	$author$project$Components$Single$Main$Variable,
+	A2($elm$json$Json$Decode$field, 'var_label', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'var_sku', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'price', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'slug', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'subtext', $elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$field,
+		'color_variant',
+		$elm$json$Json$Decode$list($author$project$Components$Single$Main$colorVariantDecoder)),
+	A2($elm$json$Json$Decode$field, 'spec', $author$project$Components$Single$Main$specDecoder));
+var $author$project$Components$Single$Main$productDecoder = A6(
+	$elm$json$Json$Decode$map5,
+	$author$project$Components$Single$Main$Product,
+	A2($elm$json$Json$Decode$field, 'product_label', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'product_video', $elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$field,
+		'features',
+		$elm$json$Json$Decode$list($elm$json$Json$Decode$string)),
+	A2(
+		$elm$json$Json$Decode$field,
+		'variables',
+		$elm$json$Json$Decode$list($author$project$Components$Single$Main$variableDecoder)),
+	A2($elm$json$Json$Decode$field, 'warranty_time', $elm$json$Json$Decode$string));
+var $author$project$Components$Single$Main$dataDecoder = A2($elm$json$Json$Decode$field, 'data', $author$project$Components$Single$Main$productDecoder);
 var $elm$json$Json$Decode$decodeString = _Json_runOnString;
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
@@ -6124,75 +6205,22 @@ var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
 		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$list = _Json_decodeList;
-var $author$project$FeaturedProduct$Product = F7(
-	function (product_sku, is_new, product_name, product_slug, product_price, product_feat, product_options) {
-		return {is_new: is_new, product_feat: product_feat, product_name: product_name, product_options: product_options, product_price: product_price, product_sku: product_sku, product_slug: product_slug};
-	});
-var $elm$json$Json$Decode$bool = _Json_decodeBool;
-var $elm$json$Json$Decode$map7 = _Json_map7;
-var $author$project$FeaturedProduct$ProductOption = F3(
-	function (product_img, product_color_code, product_color_name) {
-		return {product_color_code: product_color_code, product_color_name: product_color_name, product_img: product_img};
-	});
-var $elm$json$Json$Decode$map3 = _Json_map3;
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $author$project$FeaturedProduct$productOptionDecoder = A4(
-	$elm$json$Json$Decode$map3,
-	$author$project$FeaturedProduct$ProductOption,
-	A2($elm$json$Json$Decode$field, 'product_img', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'product_color_code', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'product_color_name', $elm$json$Json$Decode$string));
-var $author$project$FeaturedProduct$productOptionListDecoder = $elm$json$Json$Decode$list($author$project$FeaturedProduct$productOptionDecoder);
-var $author$project$FeaturedProduct$productDecoder = A8(
-	$elm$json$Json$Decode$map7,
-	$author$project$FeaturedProduct$Product,
-	A2($elm$json$Json$Decode$field, 'product_sku', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'is_new', $elm$json$Json$Decode$bool),
-	A2($elm$json$Json$Decode$field, 'product_name', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'product_slug', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'product_price', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'product_feat', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'product_options', $author$project$FeaturedProduct$productOptionListDecoder));
-var $author$project$Components$Showcase$Main$jsonDataDecoder = A2(
-	$elm$json$Json$Decode$field,
-	'data',
-	$elm$json$Json$Decode$list($author$project$FeaturedProduct$productDecoder));
-var $author$project$Components$Showcase$Main$fetchProducts = $elm$http$Http$get(
+var $author$project$Components$Single$Main$fetchProductData = $elm$http$Http$get(
 	{
-		expect: A2($elm$http$Http$expectJson, $author$project$Components$Showcase$Main$GotProducts, $author$project$Components$Showcase$Main$jsonDataDecoder),
-		url: 'http://localhost:4321/api/product/featured-product.json'
+		expect: A2($elm$http$Http$expectJson, $author$project$Components$Single$Main$GotProducts, $author$project$Components$Single$Main$dataDecoder),
+		url: 'http://localhost:4321/api/product/single-product.json'
 	});
-var $author$project$Components$Showcase$Main$init = function (_v0) {
-	return _Utils_Tuple2(
-		{data: _List_Nil, errorMsg: ''},
-		$author$project$Components$Showcase$Main$fetchProducts);
+var $author$project$Components$Single$Main$init = function (_v0) {
+	return _Utils_Tuple2($author$project$Components$Single$Main$default, $author$project$Components$Single$Main$fetchProductData);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$FeaturedProduct$UpdateInitialModel = function (a) {
-	return {$: 'UpdateInitialModel', a: a};
+var $author$project$Components$Single$Main$GalleryControl = function (a) {
+	return {$: 'GalleryControl', a: a};
 };
-var $author$project$Components$Showcase$Main$emptyProduct = {is_new: false, product_feat: '', product_name: '', product_options: _List_Nil, product_price: '', product_sku: '', product_slug: ''};
-var $author$project$Components$Showcase$Main$emptyProductModel = {
-	active_product: {product_color_code: '', product_color_name: '', product_img: ''},
-	product_data: $author$project$Components$Showcase$Main$emptyProduct
+var $author$project$Gallery$InitGallery = function (a) {
+	return {$: 'InitGallery', a: a};
 };
-var $elm$core$Debug$log = _Debug_log;
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
 var $elm$core$List$head = function (list) {
 	if (list.b) {
 		var x = list.a;
@@ -6202,6 +6230,16 @@ var $elm$core$List$head = function (list) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
 var $elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
 		if (maybe.$ === 'Just') {
@@ -6211,58 +6249,86 @@ var $elm$core$Maybe$withDefault = F2(
 			return _default;
 		}
 	});
-var $author$project$FeaturedProduct$update = F2(
+var $author$project$Components$Single$Main$getInitGalleriesFromSelected = function (selected) {
+	return A2(
+		$elm$core$Maybe$withDefault,
+		_List_Nil,
+		A2(
+			$elm$core$Maybe$map,
+			function ($) {
+				return $.galleries;
+			},
+			$elm$core$List$head(selected.color_variant)));
+};
+var $author$project$Components$Single$Main$getSelectedProduct = function (product) {
+	return A2(
+		$elm$core$Maybe$withDefault,
+		$author$project$Components$Single$Main$defaultVariable,
+		$elm$core$List$head(product.variables));
+};
+var $elm$core$Debug$log = _Debug_log;
+var $elm$core$Platform$Cmd$map = _Platform_map;
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $elm$core$Basics$ge = _Utils_ge;
+var $author$project$Gallery$update = F2(
 	function (msg, model) {
-		if (msg.$ === 'UpdateInitialModel') {
-			var product = msg.a;
-			var initialActiveOption = A2(
-				$elm$core$Maybe$withDefault,
-				{product_color_code: '', product_color_name: '', product_img: ''},
-				$elm$core$List$head(product.product_options));
-			return _Utils_Tuple2(
-				_Utils_update(
-					model,
-					{active_product: initialActiveOption, product_data: product}),
-				$elm$core$Platform$Cmd$none);
-		} else {
-			var code = msg.a;
-			var updatedActiveOption = A2(
-				$elm$core$Maybe$withDefault,
-				model.active_product,
-				$elm$core$List$head(
-					A2(
-						$elm$core$List$filter,
-						function (item) {
-							return _Utils_eq(item.product_color_code, code);
-						},
-						model.product_data.product_options)));
-			return _Utils_Tuple2(
-				_Utils_update(
-					model,
-					{active_product: updatedActiveOption}),
-				$elm$core$Platform$Cmd$none);
+		switch (msg.$) {
+			case 'InitGallery':
+				var contents = msg.a;
+				var initialGallery = A2(
+					$elm$core$List$indexedMap,
+					F2(
+						function (id, url) {
+							return {id: id, url: url};
+						}),
+					contents);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{active: 0, contents: initialGallery}),
+					$elm$core$Platform$Cmd$none);
+			case 'ChangeActiveGallery':
+				var id = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{active: id}),
+					$elm$core$Platform$Cmd$none);
+			case 'NextImage':
+				var updatedId = (_Utils_cmp(
+					model.active + 1,
+					$elm$core$List$length(model.contents)) > -1) ? ($elm$core$List$length(model.contents) - 1) : (model.active + 1);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{active: updatedId}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				var updatedId = ((model.active - 1) < 0) ? 0 : (model.active - 1);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{active: updatedId}),
+					$elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$Components$Showcase$Main$update = F2(
+var $author$project$Components$Single$Main$update = F2(
 	function (msg, model) {
 		if (msg.$ === 'GotProducts') {
 			if (msg.a.$ === 'Ok') {
 				var rawProducts = msg.a.a;
-				var productModels = A2(
-					$elm$core$List$map,
-					function (product) {
-						var _v1 = A2(
-							$author$project$FeaturedProduct$update,
-							$author$project$FeaturedProduct$UpdateInitialModel(product),
-							$author$project$Components$Showcase$Main$emptyProductModel);
-						var productModel = _v1.a;
-						return productModel;
-					},
-					rawProducts);
+				var selectedProduct = $author$project$Components$Single$Main$getSelectedProduct(rawProducts);
+				var _v1 = A2(
+					$author$project$Gallery$update,
+					$author$project$Gallery$InitGallery(
+						$author$project$Components$Single$Main$getInitGalleriesFromSelected(selectedProduct)),
+					model.galleries);
+				var initGalleryModel = _v1.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{data: productModels}),
+						{galleries: initGalleryModel, product_data: rawProducts, selected_product: selectedProduct}),
 					$elm$core$Platform$Cmd$none);
 			} else {
 				var err = msg.a.a;
@@ -6289,30 +6355,16 @@ var $author$project$Components$Showcase$Main$update = F2(
 					$elm$core$Platform$Cmd$none);
 			}
 		} else {
-			var index = msg.a;
-			var subMsg = msg.b;
-			var updatedAtIndex = F2(
-				function (i, list) {
-					return A2(
-						$elm$core$List$indexedMap,
-						F2(
-							function (j, products) {
-								return _Utils_eq(i, j) ? A2($author$project$FeaturedProduct$update, subMsg, products).a : products;
-							}),
-						list);
-				});
+			var subMsg = msg.a;
+			var _v4 = A2($author$project$Gallery$update, subMsg, model.galleries);
+			var updatedGalley = _v4.a;
+			var galleryCmd = _v4.b;
 			return _Utils_Tuple2(
 				_Utils_update(
 					model,
-					{
-						data: A2(updatedAtIndex, index, model.data)
-					}),
-				$elm$core$Platform$Cmd$none);
+					{galleries: updatedGalley}),
+				A2($elm$core$Platform$Cmd$map, $author$project$Components$Single$Main$GalleryControl, galleryCmd));
 		}
-	});
-var $author$project$Components$Showcase$Main$UpdateProductData = F2(
-	function (a, b) {
-		return {$: 'UpdateProductData', a: a, b: b};
 	});
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
@@ -6326,8 +6378,9 @@ var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
-var $elm$html$Html$a = _VirtualDom_node('a');
-var $elm$html$Html$Attributes$alt = $elm$html$Html$Attributes$stringProperty('alt');
+var $author$project$Gallery$ChangeActiveGallery = function (a) {
+	return {$: 'ChangeActiveGallery', a: a};
+};
 var $elm$virtual_dom$VirtualDom$attribute = F2(
 	function (key, value) {
 		return A2(
@@ -6336,19 +6389,31 @@ var $elm$virtual_dom$VirtualDom$attribute = F2(
 			_VirtualDom_noJavaScriptOrHtmlUri(value));
 	});
 var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
-var $author$project$SrcsetGen$generateSize = function (size) {
-	return '(min-width:' + (size.screen + (') ' + size.size));
+var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
 };
-var $author$project$SrcsetGen$generateSizes = function (sizes) {
-	return A2(
-		$elm$core$String$join,
-		', ',
+var $elm$html$Html$Attributes$classList = function (classes) {
+	return $elm$html$Html$Attributes$class(
 		A2(
-			$elm$core$List$map,
-			function (item) {
-				return $author$project$SrcsetGen$generateSize(item);
-			},
-			sizes)) + ', 50vw';
+			$elm$core$String$join,
+			' ',
+			A2(
+				$elm$core$List$map,
+				$elm$core$Tuple$first,
+				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
 };
 var $author$project$SrcsetGen$generateSrcSet = F2(
 	function (src, sizes) {
@@ -6358,40 +6423,11 @@ var $author$project$SrcsetGen$generateSrcSet = F2(
 			A2(
 				$elm$core$List$map,
 				function (size) {
-					return src + ('w=' + (size + (' ' + (size + 'vw'))));
+					return src + ('w=' + (size + ('&h=' + (size + (' ' + (size + 'vw'))))));
 				},
 				sizes));
 	});
-var $elm$html$Html$Attributes$href = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
-};
 var $elm$html$Html$img = _VirtualDom_node('img');
-var $author$project$FeaturedProduct$imgSizes = _List_fromArray(
-	[
-		{screen: '1024px', size: '25vw'},
-		{screen: '768px', size: '33vw'},
-		{screen: '640px', size: '50vw'}
-	]);
-var $elm$html$Html$p = _VirtualDom_node('p');
-var $elm$html$Html$span = _VirtualDom_node('span');
-var $elm$html$Html$Attributes$src = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'src',
-		_VirtualDom_noJavaScriptOrHtmlUri(url));
-};
-var $author$project$FeaturedProduct$srcSet = _List_fromArray(
-	['160', '240', '320', '480', '640']);
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$html$Html$Attributes$title = $elm$html$Html$Attributes$stringProperty('title');
-var $author$project$FeaturedProduct$ChangeActiveOption = function (a) {
-	return {$: 'ChangeActiveOption', a: a};
-};
-var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -6409,169 +6445,201 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $author$project$FeaturedProduct$viewOptionControl = F2(
-	function (model, options) {
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
+var $author$project$Gallery$viewControl = F2(
+	function (contents, model) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('w-full flex gap-x-3 mt-2 relative z-20')
+					$elm$html$Html$Attributes$class('w-full h-auto grid grid-cols-9 grid-rows-2 gap-2')
 				]),
 			A2(
 				$elm$core$List$map,
 				function (item) {
-					var isSelected = _Utils_eq(item.product_color_code, model.active_product.product_color_code);
-					var selectedAtt = isSelected ? _List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'border', 'solid 1px ' + item.product_color_code),
-							A2($elm$html$Html$Attributes$style, 'box-shadow', 'inset 0px 0px 0px 1.8px oklch(98.5% 0.002 247.839)')
-						]) : _List_Nil;
-					var baseAtt = _List_fromArray(
-						[
-							$elm$html$Html$Events$onClick(
-							$author$project$FeaturedProduct$ChangeActiveOption(item.product_color_code)),
-							$elm$html$Html$Attributes$class('w-5 h-5 rounded-full cursor-pointer'),
-							A2($elm$html$Html$Attributes$style, 'background-color', item.product_color_code),
-							A2($elm$html$Html$Attributes$attribute, 'role', 'radio'),
-							A2(
-							$elm$html$Html$Attributes$attribute,
-							'aria-checked',
-							isSelected ? 'true' : 'false'),
-							$elm$html$Html$Attributes$title(item.product_color_name)
-						]);
 					return A2(
 						$elm$html$Html$button,
-						_Utils_ap(baseAtt, selectedAtt),
-						_List_Nil);
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$Gallery$ChangeActiveGallery(item.id)),
+								$elm$html$Html$Attributes$classList(
+								_List_fromArray(
+									[
+										_Utils_Tuple2('aspect-square cursor-pointer', true),
+										_Utils_Tuple2(
+										'border-b-3 border-orange-500 border-solid',
+										_Utils_eq(item.id, model.active))
+									]))
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$img,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$src(item.url + 'w=160&h=160'),
+										$elm$html$Html$Attributes$class('w-full h-full object-contain'),
+										A2($elm$html$Html$Attributes$attribute, 'sizes', '160vw'),
+										A2(
+										$elm$html$Html$Attributes$attribute,
+										'srcset',
+										A2(
+											$author$project$SrcsetGen$generateSrcSet,
+											item.url,
+											_List_fromArray(
+												['160'])))
+									]),
+								_List_Nil)
+							]));
 				},
-				options));
+				contents));
 	});
-var $author$project$FeaturedProduct$view = function (model) {
+var $author$project$Gallery$NextImage = {$: 'NextImage'};
+var $author$project$Gallery$PrevImage = {$: 'PrevImage'};
+var $elm$html$Html$Attributes$alt = $elm$html$Html$Attributes$stringProperty('alt');
+var $elm$html$Html$Attributes$height = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'height',
+		$elm$core$String$fromInt(n));
+};
+var $author$project$Gallery$srcSet = _List_fromArray(
+	['750', '1000', '1200', '1500']);
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$html$Html$Attributes$width = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'width',
+		$elm$core$String$fromInt(n));
+};
+var $author$project$Gallery$viewSlides = F2(
+	function (contents, model) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('w-full h-auto flex items-center gap-x-4 relative lg:h-full')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Events$onClick($author$project$Gallery$PrevImage),
+							$elm$html$Html$Attributes$class('transparent text-[48px] flex items-center justify-center text-gray-500 absolute left-0 p-1 cursor-pointer z-[799] lg:hidden')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('<')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('w-full h-auto flex items-center overflow-x-scroll lg:overflow-x-hidden')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('w-full h-auto flex items-center transition-transform duration-500 ease-in-out'),
+									A2(
+									$elm$html$Html$Attributes$style,
+									'transform',
+									'translateX(-' + ($elm$core$String$fromInt(model.active * 100) + '%)'))
+								]),
+							A2(
+								$elm$core$List$map,
+								function (item) {
+									return A2(
+										$elm$html$Html$div,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('w-full h-auto aspect-[3/2] shrink-0 lg:aspect-square')
+											]),
+										_List_fromArray(
+											[
+												A2(
+												$elm$html$Html$img,
+												_List_fromArray(
+													[
+														$elm$html$Html$Attributes$src(item.url + 'w=750&h=750'),
+														$elm$html$Html$Attributes$class('w-full h-full object-contain'),
+														$elm$html$Html$Attributes$alt(''),
+														$elm$html$Html$Attributes$height(750),
+														$elm$html$Html$Attributes$width(750),
+														A2($elm$html$Html$Attributes$attribute, 'sizes', '750vw'),
+														A2(
+														$elm$html$Html$Attributes$attribute,
+														'srcset',
+														A2($author$project$SrcsetGen$generateSrcSet, item.url, $author$project$Gallery$srcSet))
+													]),
+												_List_Nil)
+											]));
+								},
+								contents))
+						])),
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Events$onClick($author$project$Gallery$NextImage),
+							$elm$html$Html$Attributes$class('transparent text-[48px] flex items-center justify-center text-gray-500 absolute right-0 p-1 cursor-pointer z-[799] lg:hidden')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('>')
+						]))
+				]));
+	});
+var $author$project$Gallery$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('relative w-full min-h-[450px] flex flex-col gap-y-2 bg-gray-50 p-3')
+				$elm$html$Html$Attributes$class('w-full h-auto aspect-square gap-y-2 flex flex-col lg:w-[55%]')
 			]),
 		_List_fromArray(
 			[
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('w-full h-auto flex items-center justify-center aspect-square')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$img,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('w-full h-full max-h-[400px] object-contain'),
-								$elm$html$Html$Attributes$src(model.active_product.product_img),
-								A2(
-								$elm$html$Html$Attributes$attribute,
-								'sizes',
-								$author$project$SrcsetGen$generateSizes($author$project$FeaturedProduct$imgSizes)),
-								A2(
-								$elm$html$Html$Attributes$attribute,
-								'srcset',
-								A2($author$project$SrcsetGen$generateSrcSet, model.active_product.product_img, $author$project$FeaturedProduct$srcSet)),
-								$elm$html$Html$Attributes$alt(model.product_data.product_name + (' - ' + model.active_product.product_color_name)),
-								A2($elm$html$Html$Attributes$attribute, 'loading', 'lazy'),
-								$elm$html$Html$Attributes$title(model.product_data.product_name + (' - ' + model.active_product.product_color_name))
-							]),
-						_List_Nil)
-					])),
-				A2(
-				$elm$html$Html$p,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('w-fit p-2 text-sm text-white font-bold rounded-sm'),
-						model.product_data.is_new ? $elm$html$Html$Attributes$class('bg-[#88B2AB]') : $elm$html$Html$Attributes$class('')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('New')
-					])),
-				A2(
-				$elm$html$Html$a,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('w-full flex flex-col mt-2'),
-						$elm$html$Html$Attributes$href('/product/')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$p,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('text-base text-gray-400 capitalize')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text(model.product_data.product_name)
-							])),
-						A2(
-						$elm$html$Html$p,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('text-sm text-gray-600 uppercase font-bold')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('$' + model.product_data.product_price)
-							])),
-						A2(
-						$elm$html$Html$span,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('absolute inset-0 z-10')
-							]),
-						_List_Nil)
-					])),
-				A2($author$project$FeaturedProduct$viewOptionControl, model, model.product_data.product_options),
-				A2(
-				$elm$html$Html$p,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('text-sm text-gray-500 font-base w-[75%] text-left line-clamp-3')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(model.product_data.product_feat)
-					]))
+				A2($author$project$Gallery$viewSlides, model.contents, model),
+				A2($author$project$Gallery$viewControl, model.contents, model)
 			]));
 };
-var $author$project$Components$Showcase$Main$view = function (model) {
+var $author$project$Components$Single$Main$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('w-screen h-auto px-32 py-16 flex flex-column items-center gap-x-2')
+				$elm$html$Html$Attributes$class('w-full h-auto flex flex-col p-6')
 			]),
-		A2(
-			$elm$core$List$indexedMap,
-			F2(
-				function (i, products) {
-					return A2(
-						$elm$html$Html$map,
-						$author$project$Components$Showcase$Main$UpdateProductData(i),
-						$author$project$FeaturedProduct$view(products));
-				}),
-			model.data));
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$map,
+				$author$project$Components$Single$Main$GalleryControl,
+				$author$project$Gallery$view(model.galleries))
+			]));
 };
-var $author$project$Components$Showcase$Main$main = $elm$browser$Browser$element(
+var $author$project$Components$Single$Main$main = $elm$browser$Browser$element(
 	{
-		init: $author$project$Components$Showcase$Main$init,
+		init: $author$project$Components$Single$Main$init,
 		subscriptions: function (_v0) {
 			return $elm$core$Platform$Sub$none;
 		},
-		update: $author$project$Components$Showcase$Main$update,
-		view: $author$project$Components$Showcase$Main$view
+		update: $author$project$Components$Single$Main$update,
+		view: $author$project$Components$Single$Main$view
 	});
-_Platform_export({'Components':{'Showcase':{'Main':{'init':$author$project$Components$Showcase$Main$main(
+_Platform_export({'Components':{'Single':{'Main':{'init':$author$project$Components$Single$Main$main(
 	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}}}});}(this));
