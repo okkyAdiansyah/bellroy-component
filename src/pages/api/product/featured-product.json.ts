@@ -16,7 +16,46 @@ interface Product {
     product_options : ProductOption []
 }
 
-export const GET : APIRoute = async () => {
+export interface Cart {
+    label : String,
+    img : String, 
+    color_variant : String,
+    qty : Number, 
+    price : Number
+}
+
+export const GET : APIRoute = async ({cookies}) => {
+    const carts : Cart[] = [
+        {
+            label : "Lite Travel Pack 30L",
+            img : "https://bellroy-product-images.imgix.net/bellroy_dot_com_gallery_image/USD/BLPA-BLK-241/0?auto=format&fit=crop&",
+            color_variant : "Black (Leather Free)",
+            qty : 1,
+            price : 199
+        },
+        {
+            label : "Lite Travel Pack 38L",
+            img : "https://bellroy-product-images.imgix.net/bellroy_dot_com_gallery_image/USD/BLPA-BLK-241/0?auto=format&fit=crop&",
+            color_variant : "Black (Leather Free)",
+            qty : 1,
+            price : 299
+        }
+    ]
+
+    const cookiesExists = cookies.get('cart')?.value
+    if(!cookiesExists){
+        try{
+                cookies.set('cart', JSON.stringify(carts), {
+                path: '/',
+                httpOnly: false,
+                sameSite : "lax",
+                maxAge: 60 * 60 * 24 * 7,
+                });
+        } catch (err){
+            console.error(err)
+        }
+    }
+
     const products : Product [] = [
         {
             product_sku : "TCO1",
