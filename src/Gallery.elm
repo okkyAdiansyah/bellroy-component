@@ -64,14 +64,14 @@ update msg model =
 -- VIEW
 view : Model -> Html Msg
 view model =
-    div[ class "w-full h-auto aspect-square gap-y-2 flex flex-col lg:w-[55%]"]
+    div[ class "h-auto gap-y-2 flex flex-col lg:col-start-1 lg:row-start-1 lg:row-span-2"]
         [ viewSlides model.contents model
         , viewControl model.contents model
         ]
 
 viewSlides : List Content -> Model -> Html Msg
 viewSlides contents model =
-    div[ class "w-full h-auto flex items-center gap-x-4 relative lg:h-full" ]
+    div[ class "w-full h-auto flex items-center gap-x-4 relative" ]
         [ button
             [ onClick PrevImage
             , class "transparent text-[48px] flex items-center justify-center text-gray-500 absolute left-0 p-1 cursor-pointer z-[799] lg:hidden"]
@@ -103,7 +103,7 @@ viewSlides contents model =
 
 viewControl : List Content -> Model -> Html Msg
 viewControl contents model=
-    div[ class "w-full h-auto grid grid-cols-9 grid-rows-2 gap-2" ]
+    div[ class "w-full h-auto hidden lg:grid lg:grid-cols-9 lg:grid-rows-2 lg:gap-2 " ]
         (List.map(\item ->
             button
             [ onClick (ChangeActiveGallery item.id)

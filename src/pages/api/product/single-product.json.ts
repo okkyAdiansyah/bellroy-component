@@ -106,12 +106,12 @@ export const GET : APIRoute = async () => {
                     },
                     {
                         variant_code: "BLPA-CLY-241",
-                        variant_label: "Ash (Leather Free)",
+                        variant_label: "Clay (Leather Free)",
                         is_stock: true,
                         galleries: [
-                            "https://bellroy-product-images.imgix.net/bellroy_dot_com_gallery_image/USD/BLPA-CLY-241/0?auto=format&fit=max&",
+                            "https://bellroy-product-images.imgix.net/bellroy_dot_com_gallery_image/USD/BLPA-CLY-241/0?auto=format&fit=crop&",
                             "https://bellroy-product-images.imgix.net/bellroy_dot_com_gallery_image/USD/BLPA-CLY-241/1?auto=format&fit=max&",
-                            "https://bellroy-product-images.imgix.net/bellroy_dot_com_gallery_image/USD/BLPA-CLY-241/2?auto=format&fit=crop&",
+                            "https://bellroy-product-images.imgix.net/bellroy_dot_com_gallery_image/USD/BLPA-CLY-241/2?auto=format&fit=max&",
                             "https://bellroy-product-images.imgix.net/bellroy_dot_com_gallery_image/USD/BLPA-CLY-241/3?auto=format&fit=crop&",
                             "https://bellroy-product-images.imgix.net/bellroy_dot_com_gallery_image/USD/BLPA-CLY-241/4?auto=format&fit=crop&",
                             "https://bellroy-product-images.imgix.net/bellroy_dot_com_gallery_image/USD/BLPA-CLY-241/5?auto=format&fit=crop&",

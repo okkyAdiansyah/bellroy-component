@@ -1,5 +1,18 @@
 ---
 import '../../styles/global.css';
+
+export const prerender = false;
+
+const cookie = Astro.cookies.get('cart')?.value
+let cart = []
+
+if(cookie){
+	try {
+    	cart = JSON.parse(cookie);
+  	} catch (err) {
+    	console.error("Failed to parse cart cookie:", err);
+  	}
+}
 ---
 <html lang="en">
 	<head>
@@ -9,9 +22,16 @@ import '../../styles/global.css';
 		<meta name="generator" content={Astro.generator} />
 		<title>Astro</title>
 		<script src="/elm/single.js" defer></script>
+		<script src="/elm/indicator.js" defer></script>
 		<script type="module" src="/custom-element/single-product-component.js" defer></script>
+		<script type="module" src="/custom-element/cart-indicator.js" defer></script>
 	</head>
-	<body class="w-screen max-w-screen overflow-x-hidden bg-gray-50">
-		<elm-single-product></elm-single-product>
+	<body class="max-w-screen overflow-x-hidden bg-gray-50">
+		<nav class="w-full flex items-center justify-end py-3 px-6 bg-white">
+			<elm-cart-indicator data-mode="cart-toggle" data-cart={cart.length}></elm-cart-indicator>
+		</nav>
+		<main class="w-full flex justify-center">
+			<elm-single-product data-cart-items={JSON.stringify(cart)}></elm-single-product>
+		</main>
 	</body>
 </html>
