@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import type { Cart } from "./featured-product.json";
 
-// export const prerender = false
+export const prerender = false;
 
 export const POST: APIRoute = async ({request, cookies}) => {
   if(request.headers.get("Content-Type") === "application/json"){
@@ -21,4 +21,13 @@ export const POST: APIRoute = async ({request, cookies}) => {
     return new Response("Body is not set", {status: 404})
   }
 
+}
+
+export const GET: APIRoute = async ({cookies}) => {
+  const cookie = cookies.get('cart')?.value
+  try{
+    return new Response(cookie, {status: 200})
+  }catch(err){
+    return new Response("Error", {status: 400})
+  }
 }

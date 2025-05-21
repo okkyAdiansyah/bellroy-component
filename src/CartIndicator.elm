@@ -1,8 +1,8 @@
 port module CartIndicator exposing (main, update, Msg, Model, view)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, src, attribute)
-import Svg exposing (Svg, svg, circle, path)
+import Html.Attributes exposing (class)
+import Svg exposing (svg, circle, path)
 import Svg.Attributes exposing (viewBox, d, cx, cy, r, width, height, fill, stroke, strokeWidth)
 import Browser
 
@@ -71,7 +71,7 @@ init flags =
     )
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     recieveCartFromJs UpdateModel
 
 -- Main 

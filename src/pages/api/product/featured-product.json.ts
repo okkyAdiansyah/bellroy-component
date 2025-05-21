@@ -1,5 +1,7 @@
 import type { APIRoute } from "astro";
 
+export const prerender = false;
+
 interface ProductOption {
     product_img : String,
     product_color_code : String

@@ -4,7 +4,6 @@ import Json.Decode as JD
 import Json.Encode as JE
 import SrcsetGen as Generate
 import Cart
-import Http
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
