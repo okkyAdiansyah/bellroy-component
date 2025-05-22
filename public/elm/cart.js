@@ -6329,7 +6329,6 @@ var $elm$core$Platform$Cmd$map = _Platform_map;
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $elm$core$Basics$not = _Basics_not;
-var $author$project$Cart$removeItemFromCart = _Platform_outgoingPort('removeItemFromCart', $elm$core$Basics$identity);
 var $author$project$CartIndicator$update = F2(
 	function (msg, model) {
 		var count = msg.a;
@@ -6339,7 +6338,7 @@ var $author$project$CartIndicator$update = F2(
 				{cartItem: count}),
 			$elm$core$Platform$Cmd$none);
 	});
-var $author$project$Cart$updateItemQty = _Platform_outgoingPort('updateItemQty', $elm$core$Basics$identity);
+var $author$project$Cart$updateCart = _Platform_outgoingPort('updateCart', $elm$core$Basics$identity);
 var $author$project$Cart$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -6395,12 +6394,13 @@ var $author$project$Cart$update = F2(
 							cart_items: updatedCart,
 							price_total: $author$project$Cart$calculateTotalPrice(updatedCart)
 						}),
-					$author$project$Cart$updateItemQty(encodedCart));
+					$author$project$Cart$updateCart(encodedCart));
 			case 'ToggleMiniCart':
+				var open = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{cart_isOpen: !model.cart_isOpen}),
+						{cart_isOpen: open}),
 					$elm$core$Platform$Cmd$none);
 			case 'RemoveItem':
 				var item = msg.a;
@@ -6418,7 +6418,7 @@ var $author$project$Cart$update = F2(
 							cart_items: removedItem,
 							price_total: $author$project$Cart$calculateTotalPrice(removedItem)
 						}),
-					$author$project$Cart$removeItemFromCart(encodedCart));
+					$author$project$Cart$updateCart(encodedCart));
 			case 'GotCartFromPort':
 				var items = msg.a;
 				var cartItemCount = {
@@ -6469,7 +6469,11 @@ var $elm$html$Html$Attributes$classList = function (classes) {
 				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
 };
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $author$project$Cart$RemoveItem = function (a) {
+	return {$: 'RemoveItem', a: a};
+};
 var $elm$html$Html$a = _VirtualDom_node('a');
+var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$Attributes$href = function (url) {
 	return A2(
 		$elm$html$Html$Attributes$stringProperty,
@@ -6596,70 +6600,34 @@ var $author$project$Cart$itemPrice = function (item) {
 					]))
 			]));
 };
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
 var $elm$html$Html$Attributes$src = function (url) {
 	return A2(
 		$elm$html$Html$Attributes$stringProperty,
 		'src',
 		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
-var $author$project$Cart$viewFooter = function (model) {
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('mini-cart-footer')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('mini-cart-footer__subtotal')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$p,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('mini-cart__subtotal__text')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Subtotal')
-							])),
-						A2(
-						$elm$html$Html$p,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('mini-cart__subtotal__text')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text(
-								'$' + ($elm$core$String$fromFloat(model.price_total) + ' USD'))
-							]))
-					])),
-				A2(
-				$elm$html$Html$a,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('mini-cart__checkout-btn'),
-						$elm$html$Html$Attributes$href('/')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('GO TO CHECKOUT')
-					]))
-			]));
-};
 var $author$project$Cart$viewBody = function (model) {
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('mini-cart-body')
+				$elm$html$Html$Attributes$class('mini-cart__body')
 			]),
 		_List_fromArray(
 			[
@@ -6667,7 +6635,7 @@ var $author$project$Cart$viewBody = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('mini-cart-body__item-container')
+						$elm$html$Html$Attributes$class('mini-cart__body__item-container')
 					]),
 				(!$elm$core$List$length(model.cart_items)) ? _List_fromArray(
 					[
@@ -6746,40 +6714,86 @@ var $author$project$Cart$viewBody = function (model) {
 											_List_fromArray(
 												[
 													$elm$html$Html$text('Finish: Dura Lite Nylon')
-												]))
+												])),
+											$author$project$Cart$itemPrice(item)
 										])),
-									$author$project$Cart$itemPrice(item)
+									A2(
+									$elm$html$Html$button,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('mini-cart__remove-item-btn'),
+											$elm$html$Html$Events$onClick(
+											$author$project$Cart$RemoveItem(item))
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('x')
+										]))
 								]));
-					})(model.cart_items)),
-				$author$project$Cart$viewFooter(model)
+					})(model.cart_items))
 			]));
 };
-var $elm$html$Html$button = _VirtualDom_node('button');
+var $author$project$Cart$viewFooter = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('mini-cart__footer-container')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('mini-cart__footer__subtotal')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$p,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('mini-cart__subtotal__text')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Subtotal')
+							])),
+						A2(
+						$elm$html$Html$p,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('mini-cart__subtotal__text')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								'$' + ($elm$core$String$fromFloat(model.price_total) + ' USD'))
+							]))
+					])),
+				A2(
+				$elm$html$Html$a,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('mini-cart__checkout-btn'),
+						$elm$html$Html$Attributes$href('/')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('GO TO CHECKOUT')
+					]))
+			]));
+};
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
 var $elm$html$Html$span = _VirtualDom_node('span');
 var $author$project$CartIndicator$cartBadge = function (model) {
 	return A2(
 		$elm$html$Html$span,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('absolute text-[9px] text-white bg-orange-500 h-[13px] min-w-[8px] rounded-full font-bold border-2 border-solid border-white px-[2.5px] -top-[5px] -right-[5px] text-center box-content')
+				$elm$html$Html$Attributes$class('absolute text-[9px] text-white bg-orange-500 h-[13px] min-w-[8px] rounded-full font-bold border-2 border-solid border-white px-[2.5px] -top-[5px] -right-[5px] text-center box-content cart-indicator-badge')
 			]),
 		_List_fromArray(
 			[
@@ -6846,7 +6860,7 @@ var $author$project$CartIndicator$view = function (model) {
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('relative flex items-center justify-center')
+				$elm$html$Html$Attributes$class('relative flex items-center justify-center cart-indicator-container')
 			]),
 		(model.mode === 'cart-toggle') ? _List_fromArray(
 			[
@@ -6863,9 +6877,13 @@ var $author$project$CartIndicator$view = function (model) {
 			[
 				A2(
 				$elm$html$Html$div,
-				_List_Nil,
 				_List_fromArray(
-					[$author$project$CartIndicator$cartIcon]))
+					[
+						$elm$html$Html$Attributes$class('cart-indicator')
+					]),
+				_List_fromArray(
+					[$author$project$CartIndicator$cartIcon])),
+				(!(!model.cartItem)) ? $author$project$CartIndicator$cartBadge(model) : $elm$html$Html$text('')
 			]));
 };
 var $author$project$Cart$viewHeader = function (indicator) {
@@ -6873,7 +6891,7 @@ var $author$project$Cart$viewHeader = function (indicator) {
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('mini-cart-head')
+				$elm$html$Html$Attributes$class('mini-cart__head')
 			]),
 		_List_fromArray(
 			[
@@ -6882,16 +6900,14 @@ var $author$project$Cart$viewHeader = function (indicator) {
 				$author$project$Cart$CartIndicatorMsg,
 				$author$project$CartIndicator$view(indicator)),
 				A2(
-				$elm$html$Html$button,
+				$elm$html$Html$p,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('mini-cart__close-button'),
-						$elm$html$Html$Events$onClick(
-						$author$project$Cart$ToggleMiniCart(false))
+						$elm$html$Html$Attributes$class('mini-cart__head-title')
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('x')
+						$elm$html$Html$text('Your shopping cart.')
 					]))
 			]));
 };
@@ -6910,7 +6926,8 @@ var $author$project$Cart$view = function (model) {
 		_List_fromArray(
 			[
 				$author$project$Cart$viewHeader(model.cart_indicator),
-				$author$project$Cart$viewBody(model)
+				$author$project$Cart$viewBody(model),
+				$author$project$Cart$viewFooter(model)
 			]));
 };
 var $author$project$Cart$main = $elm$browser$Browser$element(

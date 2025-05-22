@@ -1,44 +1,7 @@
 ---
 import '../styles/global.css';
-
-export const prerender = false;
-
-const cookie = Astro.cookies.get('cart')?.value
-let cart = []
-
-if(cookie){
-	try {
-    	cart = JSON.parse(cookie);
-  	} catch (err) {
-    	console.error("Failed to parse cart cookie:", err);
-  	}
-}
-
+import MainLayout from "./layouts/MainLayout.astro"
 ---
-
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-		<script src="/elm/showcase.js" defer></script>
-		<script src="/elm/indicator.js" defer></script>
-		<script src="/elm/cart.js" defer></script>
-		<script type="module" src="/custom-element/showcase-component.js" defer></script>
-		<script type="module" src="/custom-element/cart-indicator.js" defer></script>
-		<script type="module" src="/custom-element/mini-cart.js" defer></script>
-	</head>
-	<body class="max-w-screen overflow-x-hidden bg-gray-200">
-		<nav class="w-full flex items-center justify-end py-3 px-6 bg-white">
-			<elm-cart-indicator data-mode="cart-toggle" data-cart={cart.length}></elm-cart-indicator>
-			<!-- <p></p>
-			<code>{JSON.stringify(cart)}</code> -->
-		</nav>
-		<main>
-			<elm-showcase></elm-showcase>
-			<elm-mini-cart></elm-mini-cart>
-		</main>
-	</body>
-</html>
+<MainLayout>
+	<elm-showcase></elm-showcase>
+</MainLayout>

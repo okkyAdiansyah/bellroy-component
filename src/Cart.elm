@@ -10,6 +10,7 @@ import Html.Events exposing (..)
 import Browser
 
 -- PORTS OUT
+port updateCart : JE.Value -> Cmd msg
 port removeItemFromCart : JE.Value -> Cmd msg
 port updateItemQty : JE.Value -> Cmd msg
 
@@ -162,9 +163,9 @@ update msg model =
                     countItemTotalPrice val item model.cart_items
                 encodedCart = encodeCart updatedCart
             in
-             ( {model | cart_items = updatedCart, price_total = calculateTotalPrice updatedCart}, updateItemQty encodedCart )
-        ToggleMiniCart _ ->
-            ( {model | cart_isOpen = not model.cart_isOpen}, Cmd.none )
+             ( {model | cart_items = updatedCart, price_total = calculateTotalPrice updatedCart}, updateCart encodedCart )
+        ToggleMiniCart open ->
+            ( {model | cart_isOpen = open}, Cmd.none )
         RemoveItem item ->
             let
                 removedItem =
@@ -175,7 +176,7 @@ update msg model =
                         model.cart_items
                 encodedCart = encodeCart removedItem
             in
-             ( {model | cart_items = removedItem, price_total = calculateTotalPrice removedItem}, removeItemFromCart encodedCart )
+             ( {model | cart_items = removedItem, price_total = calculateTotalPrice removedItem}, updateCart encodedCart )
         GotCartFromPort items ->
             let
                 cartItemCount = {cartItem = List.length items, mode = "cart-indicator"} 
@@ -194,25 +195,23 @@ view model =
     div
     [ classList
         [ ("mini-cart", True)
-        , ("mini-cart--isActive", model.cart_isOpen == True)]
+        , ("mini-cart--isActive", model.cart_isOpen)]
     ]
     [ viewHeader model.cart_indicator
-    , viewBody model]
+    , viewBody model
+    , viewFooter model
+    ]
 
 viewHeader : CartIndicator.Model -> Html Msg
 viewHeader indicator =
-    div[ class "mini-cart-head" ]
+    div[ class "mini-cart__head" ]
     [ Html.map CartIndicatorMsg (CartIndicator.view indicator)
-    , button
-        [ class "mini-cart__close-button"
-        , onClick (ToggleMiniCart False)
-        ][ text "x" ]
-    ]
+    , p[ class "mini-cart__head-title" ][ text "Your shopping cart."]]
 
 viewBody : Model -> Html Msg
 viewBody model =
-    div[ class "mini-cart-body" ]
-    [ div[ class "mini-cart-body__item-container" ]
+    div[ class "mini-cart__body" ]
+    [ div[ class "mini-cart__body__item-container" ]
      ( if List.length model.cart_items == 0 then
             [ p[ class "mini-cart__empty-label" ][text "You have no items in your shopping cart."] ]
          else
@@ -233,20 +232,23 @@ viewBody model =
                              [text item.label]
                          , p[ class "mini-cart__item-variant" ][text ("Color: " ++ item.color_variant)]
                          , p[ class "mini-cart__item-variant" ][text "Finish: Dura Lite Nylon"]
+                         , itemPrice item
                          ]
-                     , itemPrice item
+                     , button
+                        [ class "mini-cart__remove-item-btn"
+                        , onClick (RemoveItem item)]
+                        [text "x"]
                      ]
                  )
              )
              model.cart_items
          )
-     , viewFooter model
     ]
 
 viewFooter : Model -> Html Msg
 viewFooter model =
-    div[ class "mini-cart-footer" ]
-    [ div[ class "mini-cart-footer__subtotal" ]
+    div[ class "mini-cart__footer-container" ]
+    [ div[ class "mini-cart__footer__subtotal" ]
         [ p[ class "mini-cart__subtotal__text" ][ text "Subtotal" ]
         , p[ class "mini-cart__subtotal__text" ][ text ("$" ++ String.fromFloat model.price_total ++ " USD")]
         ]

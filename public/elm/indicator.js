@@ -5174,7 +5174,7 @@ var $author$project$CartIndicator$UpdateModel = function (a) {
 	return {$: 'UpdateModel', a: a};
 };
 var $author$project$CartIndicator$recieveCartFromJs = _Platform_incomingPort('recieveCartFromJs', $elm$json$Json$Decode$int);
-var $author$project$CartIndicator$subscriptions = function (model) {
+var $author$project$CartIndicator$subscriptions = function (_v0) {
 	return $author$project$CartIndicator$recieveCartFromJs($author$project$CartIndicator$UpdateModel);
 };
 var $author$project$CartIndicator$update = F2(
@@ -5204,7 +5204,7 @@ var $author$project$CartIndicator$cartBadge = function (model) {
 		$elm$html$Html$span,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('absolute text-[9px] text-white bg-orange-500 h-[13px] min-w-[8px] rounded-full font-bold border-2 border-solid border-white px-[2.5px] -top-[5px] -right-[5px] text-center box-content')
+				$elm$html$Html$Attributes$class('absolute text-[9px] text-white bg-orange-500 h-[13px] min-w-[8px] rounded-full font-bold border-2 border-solid border-white px-[2.5px] -top-[5px] -right-[5px] text-center box-content cart-indicator-badge')
 			]),
 		_List_fromArray(
 			[
@@ -5272,7 +5272,7 @@ var $author$project$CartIndicator$view = function (model) {
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('relative flex items-center justify-center')
+				$elm$html$Html$Attributes$class('relative flex items-center justify-center cart-indicator-container')
 			]),
 		(model.mode === 'cart-toggle') ? _List_fromArray(
 			[
@@ -5289,9 +5289,13 @@ var $author$project$CartIndicator$view = function (model) {
 			[
 				A2(
 				$elm$html$Html$div,
-				_List_Nil,
 				_List_fromArray(
-					[$author$project$CartIndicator$cartIcon]))
+					[
+						$elm$html$Html$Attributes$class('cart-indicator')
+					]),
+				_List_fromArray(
+					[$author$project$CartIndicator$cartIcon])),
+				(!(!model.cartItem)) ? $author$project$CartIndicator$cartBadge(model) : $elm$html$Html$text('')
 			]));
 };
 var $author$project$CartIndicator$main = $elm$browser$Browser$element(

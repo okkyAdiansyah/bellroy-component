@@ -34,7 +34,7 @@ update msg model =
 -- VIEW
 view : Model -> Html Msg
 view model =
-    div [ class "relative flex items-center justify-center" ]
+    div [ class "relative flex items-center justify-center cart-indicator-container" ]
         (if model.mode == "cart-toggle" then
             [ button [ class "inline-block cursor-pointer" ] [ cartIcon ]
             , if model.cartItem /= 0 then
@@ -43,7 +43,12 @@ view model =
                 text ""
             ]
          else
-            [ div [] [ cartIcon ] ]
+            [ div[ class "cart-indicator" ] [ cartIcon ] 
+            , if model.cartItem /= 0 then
+                cartBadge model
+              else
+                text ""
+            ]
         )
 
 cartIcon : Html Msg
@@ -58,7 +63,7 @@ cartIcon =
 
 cartBadge : Model -> Html Msg
 cartBadge model = 
-    span[ class "absolute text-[9px] text-white bg-orange-500 h-[13px] min-w-[8px] rounded-full font-bold border-2 border-solid border-white px-[2.5px] -top-[5px] -right-[5px] text-center box-content" ][ text (String.fromInt model.cartItem) ]
+    span[ class "absolute text-[9px] text-white bg-orange-500 h-[13px] min-w-[8px] rounded-full font-bold border-2 border-solid border-white px-[2.5px] -top-[5px] -right-[5px] text-center box-content cart-indicator-badge" ][ text (String.fromInt model.cartItem) ]
     
 
 -- INIT
